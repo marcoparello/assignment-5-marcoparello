@@ -1,0 +1,33 @@
+name: SCA Pipeline
+
+on:
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  dependency_scan:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      ####################################################
+      # TODO: Choose ONE: Grype OR Trivy
+      # WARNING: You must point the tool to ./vulnerable-app
+      # otherwise it will not find package.json.
+      ####################################################
+
+      ####################################################
+      # TODO: Add supply-chain control
+      # (e.g., license policy or dependency gate)
+      ####################################################
+
+      ####################################################
+      # TODO: Fail build if severity threshold exceeded
+      # REQUIRED: This must return exit code 1 if 
+      # High/Critical vulnerabilities are found.
+      ####################################################
+
+      ####################################################
+      # TODO: Upload scan report artifact
+      ####################################################

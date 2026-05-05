@@ -1,0 +1,28 @@
+name: SBOM Pipeline
+
+on:
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  sbom:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      ####################################################
+      # TODO: Generate SBOM (Syft or CycloneDX)
+      # Target: ./vulnerable-app
+      ####################################################
+
+      ####################################################
+      # TODO: Add one SBOM-based policy check
+      # Use the generated SBOM to identify a specific 
+      # component or check for vulnerabilities.
+      ####################################################
+
+      ####################################################
+      # TODO: Upload SBOM artifact
+      # REQUIRED: The autograder will check for this artifact.
+      ####################################################

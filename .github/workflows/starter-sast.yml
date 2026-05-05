@@ -1,0 +1,44 @@
+name: SAST Pipeline
+
+on:
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  sast_scan:
+    runs-on: ubuntu-latest
+    permissions:
+      security-events: write
+      actions: read
+      contents: read
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      ####################################################
+      # TODO: Install / initialize SAST tool
+      # NOTE: The app is in ./vulnerable-app/
+      ####################################################
+
+      ####################################################
+      # TODO: Run static analysis
+      ####################################################
+
+      ####################################################
+      # TODO: Add one enhancement
+      # HINT: Look at vulnerable-app/src/routes/admin.js.
+      # Can your scanner detect the hardcoded SECRET?
+      ####################################################
+
+      ####################################################
+      # TODO: Configure quality gate
+      # CRITICAL: For Task 4, this workflow must FAIL the 
+      # build if High/Critical findings are found. 
+      # CodeQL may require a custom script to return a 
+      # non-zero exit code.
+      ####################################################
+
+      ####################################################
+      # TODO: Upload SARIF or artifact
+      ####################################################

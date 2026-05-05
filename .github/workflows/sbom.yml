@@ -1,0 +1,46 @@
+name: SBOM Pipeline
+
+on:
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  sbom:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+       #################################################### 
+       #TODO: Generate SBOM (Syft or CycloneDX)
+       # Target: ./vulnerable-app
+       ####################################################
+      - name: Generate SBOM (CycloneDX)
+        uses: anchore/sbom-action@v0
+        with:
+          path: ./vulnerable-app
+          format: cyclonedx-json
+          output-file: sbom.json
+
+      ####################################################
+      # TODO: Add one SBOM-based policy check
+      # Use the generated SBOM to identify a specific 
+      # component or check for vulnerabilities.
+      ####################################################
+      - name: Validate SBOM (CycloneDX)
+        run: | 
+            curl -L https://github.com/CycloneDX/cyclonedx-cli/releases/latest/download/cyclonedx-linux-x64 \
+            -o cyclonedx
+            chmod +x cyclonedx
+            sudo mv cyclonedx /usr/local/bin/
+            cyclonedx validate --input-file sbom.json --fail-on-errors
+     
+      ####################################################
+      # TODO: Upload SBOM artifact
+      # REQUIRED: The autograder will check for this artifact.
+      ####################################################
+      - name: Upload SBOM Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: cyclonedx-sbom
+          path: sbom.json

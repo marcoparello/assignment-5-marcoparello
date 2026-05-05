@@ -1,0 +1,80 @@
+name: SAST Pipeline Using CodeQl
+
+on:
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  sast_scan:
+    runs-on: ubuntu-latest
+    permissions:
+      security-events: write
+      actions: read
+      contents: read
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      ####################################################
+      # TODO: Install / initialize SAST tool
+      # NOTE: The app is in ./vulnerable-app/
+      ####################################################
+  
+      - name: Initialize CodeQL
+        uses: github/codeql-action/init@v3
+      ####################################################
+      # TODO: Add one enhancement
+      # HINT: Look at vulnerable-app/src/routes/admin.js.
+      # Can your scanner detect the hardcoded SECRET?
+      ####################################################
+        with: 
+          languages: javascript
+          source-root: ./vulnerable-app/
+          queries: |
+           ./.github/
+
+      - name: Autobuild CodeQL
+        uses: github/codeql-action/autobuild@v3
+      ####################################################
+      # TODO: Run static analysis
+      ####################################################
+      - name: CodeQL Analysis
+        uses: github/codeql-action/analyze@v3
+    
+        with: 
+          upload: False
+          output: codeql-sarif
+          category: "/security"
+
+      ####################################################
+      # TODO: Upload SARIF or artifact
+      ####################################################
+      - name: CodeQL Artifact Upload
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: codeql-artifact
+          path: codeql-sarif
+     ####################################################
+      # TODO: Configure quality gate
+      # CRITICAL: For Task 4, this workflow must FAIL the 
+      # build if High/Critical findings are found. 
+      # CodeQL may require a custom script to return a 
+      # non-zero exit code.
+      ####################################################
+      - name: Fail on HIGH or CRITICAL
+        run: |
+          COUNT=$(jq '
+            [.runs[].results[]
+             | select(.properties["security-severity"] != null)
+             | select((.properties["security-severity"] | tonumber) >= 7.0)
+            ] | length
+          ' codeql-sarif/*.sarif)
+
+          echo "High/Critical findings: $COUNT"
+
+          if [ "$COUNT" -gt 0 ]; then
+            echo "Failing due to high/critical vulnerabilities"
+            exit 1
+          fi
