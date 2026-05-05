@@ -1,0 +1,15 @@
+{
+  "name": "cyse411-vulnerable-app",
+  "version": "1.0.0",
+  "description": "Training target for DevSecOps assignment",
+  "main": "src/app.js",
+  "scripts": {
+    "start": "node src/app.js"
+  },
+  "dependencies": {
+    "express": "4.17.1",
+    "lodash": "4.17.20",
+    "jsonwebtoken": "8.5.1",
+    "mongoose": "5.7.5"
+  }
+}
