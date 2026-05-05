@@ -1,0 +1,3 @@
+policy:
+  - ./policies/dependency-policy.rego
+  - ./policies/license-policy.rego
